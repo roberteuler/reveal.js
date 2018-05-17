@@ -1,49 +1,413 @@
 <!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<html lang="en">
 
-		<title>reveal.js</title>
+<head>
+	<meta charset="utf-8">
 
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+	<title>reveal.js – The HTML Presentation Framework</title>
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+	<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+	<meta name="author" content="Hakim El Hattab">
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+	<!-- Theme used for syntax highlighting of code -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+	</script>
+
+	<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+</head>
+
+<body>
+
+	<div class="reveal">
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+		<div class="slides">
+			<section>
+				<h1>The Sorrows of Young UI5 Developers</h1>
+				<h4>Lessons learned of 3 Years UI5 and Gateway projects</h4>
+
+				<p>
+					<small>by Markus Wenzel & Robert Euler</small>
+				</p>
+				<p>
+					<small>16.05.18 @ AOK Systems</small>
+				</p>
+				<aside class="notes">
+					Steuerung der Präsentation : ESC -> Übersicht, Alt+Click -> Rein-/Rauszoomen, S -> Speakerfenster
+				</aside>
+			</section>
+
+			<section>
+				<h2>Our Background</h2>
+				<a href="#">
+					<img width="600" height="400" data-src="./img/background.png" alt="Background">
+				</a>
+			</section>
+
+			<!-- Weg von ABAP zu JS-->
+			<section>
+				<section>
+					<h2>The
+						<strong>journey</strong> from a typed ABAP world to the "freedom" of JavaScript</h2>
+					<a href="#" class="fragment">
+						<img width="300" height="200" data-src="./img/error.gif" alt="Error">
+					</a>
+				</section>
+				<section>
+					<h2>Fun with JavaScript Typesystem</h2>
+					<span class="fragment">
+						<p>Types</p>
+						<ul>
+							<li> String</li>
+							<li> Number (including the funny NaN -> Not a Number)</li>
+							<li> Boolean</li>
+							<li> Null</li>
+							<li> Undefined</li>
+							<li> Object</li>
+						</ul>
+					</span>
+					<aside class="notes">
+						Object: auch Array oder Funktionen Undefined ist eine globale Variable. Null ein schlüsselwort.
+					</aside>
+				</section>
+				<section>
+					<h3>Fun with JavaScript Typesystem (2)</h3>
+					<span class="fragment">
+						<p>Lets taste the "freedom"</p>
+						<ul>
+							<li> typeof NaN ->
+								<span class="fragment">"number"</span>
+							</li>
+							<li> NaN == NaN ->
+								<span class="fragment">false</span>
+							</li>
+							<li> 0 == false ->
+								<span class="fragment">true</span>
+							</li>
+							<li> typeof [] == typeof null ->
+								<span class="fragment">true (both are Objects)</span>
+							</li>
+							<li> null instanceof Object ->
+								<span class="fragment">false</span>
+							</li>
+							<li> typeof "testString" ->
+								<span class="fragment">"string"</span>
+							</li>
+							<li> "testString" instanceof String ->
+								<span class="fragment">false</span>
+							</li>
+							<li> []+[] ->
+								<span class="fragment">""</span>
+							</li>
+							<li> {}+[] ->
+								<span class="fragment">0</span>
+							</li>
+						</ul>
+					</span>
+				</section>
+				<section>
+					<h3>Fun with JavaScript Scopes</h3>
+					<ul>
+						<li> There is no Blockscope in classic JS! Only functions create a scope</li>
+						<li> Variable Declarations are always at the start of the scope (called hoisting)</li>
+						<li> With ES6 the new Keywords "let" and "const" come to save us</li>
+					</ul>
+					<pre><code class="hljs" data-trim contenteditable>
+									if (true) {
+										var name = 'I really like';
+										let skills = 'ES6';	
+									}
+									// logs 'I really like sapui5' because of hoisting
+									console.log(name + ui5); 
+									// Uncaught ReferenceError: skills is not defined	
+									console.log(skills); 
+									var ui5 = ' sapui5';
+							</code></pre>
+				</section>
+				<section>
+					<h3>Fun with JavaScript Context</h3>
+					<ul>
+						<li> The keyword "this" points to the current Execution Context. Which changes e.g. when using asynchronous functions</li>
+						<li> Again with ES6 the new Arrow-Function "=>" comes to save us or use .bind or jQuery.proxy </li>
+					</ul>
+					<pre><code class="hljs" data-trim contenteditable>
+									this.odataModel.read("/Accounts", {
+										success: function(data, response) {
+											if(data){
+												//error this.showResults is not a function
+												this.showResults(data.results);	
+											}},
+										error: jQuery.proxy(function(error) {
+											// works because jQuery.proxy passes the context
+											this.showMessage(error.message); 
+										}, this)});
+							</code></pre>
+				</section>
+			</section>
+			<!-- SAPUI5-->
+			<section>
+				<section data-background="./img/ui5.png">
+					<h2 style="color:#009DE0">Now we know JS can be tricky, but what about
+						<strong>SAPUI5</strong>?</h2>
+				</section>
+				<section>
+					<h2>The WebIDE: The optimal UI5 dev-tool?</h2>
+					<span class="fragment">
+						<p>Sadly not....</p>
+						<p>The Competitors are too strong:</p>
+						<a href="#">
+							<img width="500" height="200" data-src="./img/ides.png" alt="IDEs">
+						</a>
+					</span>
+				</section>
+				<section>
+					<h2>Compared to the cool kids?</h2>
+					<a href="#">
+						<img width="500" height="200" data-src="./img/frameworks.jpg" alt="Framework">
+					</a>
+				</section>
+				<section>
+					<h2>Then why use UI5?</h2>
+					<ul>
+						<li class="fragment"> SAP Marketing is
+							<strong>strong</strong>. Customers prefer the SAP supported solution.</li>
+						<li class="fragment"> A lot of things come out of the box: authentication, responsiveness, lots of controls,...</li>
+						<li class="fragment"> Decent themes, Odata handling, Test-Framework and more are already included</li>
+						<li class="fragment"> You can be really productive and fast. Even without Fiori Elements.</li>
+					</ul>
+				</section>
+			</section>
+
+			<!-- Systemumgebung-->
+			<section>
+				<section>
+					<h2>system environment</h2>
+					<span class="fragment">
+						<h3>Expectations</h3>
+						<p>vs.</p>
+						<h3>Reality</h3>
+					</span>
+				</section>
+				<section>
+					<h2>Expectations</h2>
+					<a href="#">
+						<img width="600" height="400" data-src="./img/newFioriProgrammingModel.png" alt="New Fiori Programming Model">
+					</a>
+					<p>
+						<small style="font-size: 0.8rem">stolen from
+							<a href="https://de.slideshare.net/ttrapp/abap-state-of-the-art">Tobias Trapp & Martin Fischer</a>
+						</small>
+					</p>
+				</section>
+				<section>
+					<h2>Reality</h2>
+					<ul>
+						<li class="fragment"> Netweaver 7.31</li>
+						<li class="fragment"> Embedded Deployment</li>
+						<li class="fragment"> SAPUI5 version 1.28</li>
+					</ul>
+				</section>
+				<section>
+					<h2>But Why????</h2>
+					<a href="#">
+						<img width="600" height="400" data-src="./img/why.gif" alt="Why">
+					</a>
+				</section>
+				<section>
+					<h3> A typical project for us</h3>
+					<ul>
+						<li class="fragment"> Small UI5 Apps/Tools complement other UIs on BW or CRM System</li>
+						<li class="fragment"> Customers are not willing to spend money on Frontend Server</li>
+						<li class="fragment"> Patching the systems would require to update other business components as well</li>
+					</ul>
+				</section>
+			</section>
+			<!--  Technologische Konsequenzen-->
+			<section>
+				<section>
+					<h2>Consequences and how to deal with them?</h2>
+					<a href="#" class="fragment">
+						<img width="600" height="400" data-src="./img/hammer.gif" alt="Hammer">
+					</a>
+				</section>
+				<section>
+					<h3> Frontend</h3>
+					<table>
+						<tr>
+							<th>Expectation</th>
+							<th>Reality</th>
+						</tr>
+						<tr>
+							<td>Fiori Elements</td>
+							<td>Custom Development</td>
+						</tr>
+						<tr>
+							<td>Newest Features & Elements</td>
+							<td>Lots of Restrictions in old Versions (or use OpenUI5)</td>
+						</tr>
+						<tr>
+							<td>Well Documented Examples</td>
+							<td>Sometimes no Documentation at all -> StackOverflow!!!</td>
+						</tr>
+					</table>
+				</section>
+				<section>
+					<h3> Backend</h3>
+					<table>
+						<tr>
+							<th>Expectation</th>
+							<th>Reality</th>
+						</tr>
+						<tr>
+							<td>CDS and BOPF</td>
+							<td>SADL Mapping of Tables/Views + Custom Development of Services</td>
+						</tr>
+						<tr>
+							<td>Newest ABAP Features</td>
+							<td>No Table or Constructor Expressions </td>
+						</tr>
+						<tr>
+							<td>Standard Interfaces for CRM</td>
+							<td>Not fully implemented, sometimes buggy or not working as expected </td>
+						</tr>
+					</table>
+				</section>
+				<section>
+					<h3>Expectations in the Project-Team</h3>
+					<ul>
+						<li class="fragment"> There is a plug and play "standard" for UI5 Interfaces, atleast in a crm system</li>
+						<li class="fragment">
+							<q>It's only one added field with valuehelp</q>
+						</li>
+						<li class="fragment"> The UI can be fully customized through the backend</li>
+					</ul>
+					<p class="fragment">When does it have to be ready?</p>
+					<a href="#" class="fragment">
+						<img width="300" height="200" data-src="./img/now.gif" alt="Now">
+					</a>
+				</section>
+			</section>
+			<section>
+					<section>
+							<h2>Our Lessons (1)</h2>
+							<p>Use the tools you got!</p>
+							<ul>
+								<li class="fragment"> Use and practice a sapui5 development workflow in a decent IDE. Git and a good build process saves a lot of time.</li>
+								<li class="fragment"> Keep an eye out for cool new tools and features to include in your Workflow. Babel, Typescript or Webpack might be candidates.</li>
+								<li class="fragment">
+									Let SADL do some backend work for you. Exposing Tables, Views or CDS works decent even in older systems.
+								</li>
+							</ul>
+						</section>
+						<section>
+								<h2>Our Lessons (2)</h2>
+								<p>Talk to your Team and Clarify the costs!</p>
+								<ul>
+									<li class="fragment">The cool customizable and dynamic Table with language dependent description from the backend won't come for free</li>
+									<li class="fragment">The expectations of what the Framework does for you might differ greatly from reality </li>
+								</ul>
+						</section>
+						<section>
+								<h2>Our Lessons (3)</h2>
+								<p>Be realistic and involve the user!</p>
+								<ul>
+									<li class="fragment">Estimate the efforts realistically. Development for different Browsers (especially IE) can be time consuming.</li>
+									<li class="fragment">Involve the users early. It increases the chances that he will be working with the new UI happily.</li>
+								</ul>
+						</section>
+												
+						<section>
+								<h2>Our Lessons (4)</h2>
+								<span class="fragment">
+								<p>Have some fun while using UI5 and other new cool technologies!</p>
+								<a href="#" >
+										<img width="300" height="200" data-src="./img/fun.gif" alt="Fun">
+								</a>
+								</span>	
+						</section>
+			</section>
+			<section>
+				<a href="#">
+					<img width="500" height="200" data-src="./img/done.gif" alt="Done">
+				</a>
+			</section>
 		</div>
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+	</div>
 
-		<script>
-			// More info about config & dependencies:
-			// - https://github.com/hakimel/reveal.js#configuration
-			// - https://github.com/hakimel/reveal.js#dependencies
-			Reveal.initialize({
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
-			});
-		</script>
-	</body>
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
+
+	<script>
+		// More info https://github.com/hakimel/reveal.js#configuration
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			history: true,
+			center: true,
+
+			transition: 'convex', // none/fade/slide/convex/concave/zoom
+
+			// More info https://github.com/hakimel/reveal.js#dependencies
+			dependencies: [{
+					src: 'lib/js/classList.js',
+					condition: function () {
+						return !document.body.classList;
+					}
+				},
+				{
+					src: 'plugin/markdown/marked.js',
+					condition: function () {
+						return !!document.querySelector('[data-markdown]');
+					}
+				},
+				{
+					src: 'plugin/markdown/markdown.js',
+					condition: function () {
+						return !!document.querySelector('[data-markdown]');
+					}
+				},
+				{
+					src: 'plugin/highlight/highlight.js',
+					async: true,
+					callback: function () {
+						hljs.initHighlightingOnLoad();
+					}
+				},
+				{
+					src: 'plugin/search/search.js',
+					async: true
+				},
+				{
+					src: 'plugin/zoom-js/zoom.js',
+					async: true
+				},
+				{
+					src: 'plugin/notes/notes.js',
+					async: true
+				}
+			]
+		});
+	</script>
+
+</body>
+
 </html>
